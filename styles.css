@@ -38,6 +38,15 @@
     --input-border: #ddd;
     --input-focus-border: #4a90e2;
     --input-focus-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+    
+    /* Status and Priority Colors */
+    --priority-high-bg: #ffebee;
+    --priority-medium-bg: #fff3e0;
+    --priority-low-bg: #e8f5e8;
+    --status-read-bg: #e8f5e8;
+    --status-reading-bg: #e3f2fd;
+    --status-to-read-bg: #fff3e0;
+    --status-skimmed-bg: #f3e5f5;
 }
 
 body {
@@ -286,8 +295,8 @@ body {
 }
 
 .table-toggle-btn {
-    background: #4a90e2;
-    color: white;
+    background: var(--accent-color);
+    color: var(--text-inverse);
     border: none;
     padding: 8px 12px;
     border-radius: 4px;
@@ -300,7 +309,7 @@ body {
 }
 
 .table-toggle-btn:hover {
-    background: #357abd;
+    background: var(--accent-hover);
 }
 
 .toggle-icon {
@@ -390,18 +399,18 @@ textarea {
 }
 
 /* Status and Priority Row Colors */
-.priority-high { background: #ffebee; }
-.priority-medium { background: #fff3e0; }
-.priority-low { background: #e8f5e8; }
-.status-read { background: #e8f5e8; }
-.status-reading { background: #e3f2fd; }
-.status-to-read { background: #fff3e0; }
-.status-skimmed { background: #f3e5f5; }
+.priority-high { background: var(--priority-high-bg, #ffebee); }
+.priority-medium { background: var(--priority-medium-bg, #fff3e0); }
+.priority-low { background: var(--priority-low-bg, #e8f5e8); }
+.status-read { background: var(--status-read-bg, #e8f5e8); }
+.status-reading { background: var(--status-reading-bg, #e3f2fd); }
+.status-to-read { background: var(--status-to-read-bg, #fff3e0); }
+.status-skimmed { background: var(--status-skimmed-bg, #f3e5f5); }
 
 /* Button Styles */
 .btn {
-    background: #4a90e2;
-    color: white;
+    background: var(--accent-color);
+    color: var(--text-inverse);
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
@@ -411,11 +420,11 @@ textarea {
 }
 
 .btn:hover {
-    background: #357abd;
+    background: var(--accent-hover);
 }
 
 .btn:disabled {
-    background: #ccc;
+    background: var(--text-secondary);
     cursor: not-allowed;
 }
 
@@ -446,9 +455,9 @@ textarea {
 .citation-display {
     flex: 1;
     padding: 8px 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--input-border);
     border-radius: 4px;
-    background: #f8f9fa;
+    background: var(--input-bg);
     font-size: 13px;
     line-height: 1.4;
     min-height: 60px;
@@ -457,8 +466,8 @@ textarea {
 }
 
 .citation-display:hover {
-    border-color: #4a90e2;
-    background: #f0f4ff;
+    border-color: var(--input-focus-border);
+    background: var(--table-row-hover);
 }
 
 .citation-display em {
@@ -466,8 +475,8 @@ textarea {
 }
 
 .copy-citation-btn {
-    background: #4a90e2;
-    color: white;
+    background: var(--accent-color);
+    color: var(--text-inverse);
     border: none;
     padding: 8px 10px;
     border-radius: 4px;
@@ -479,7 +488,7 @@ textarea {
 }
 
 .copy-citation-btn:hover {
-    background: #357abd;
+    background: var(--accent-hover);
 }
 
 .copy-citation-btn:active {
@@ -883,6 +892,15 @@ body[data-theme="dark"] {
     --input-border: #404040;
     --input-focus-border: #3498db;
     --input-focus-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    
+    /* Status and Priority Colors */
+    --priority-high-bg: #4a2c2c;
+    --priority-medium-bg: #4a3d2c;
+    --priority-low-bg: #2c4a2c;
+    --status-read-bg: #2c4a2c;
+    --status-reading-bg: #2c3a4a;
+    --status-to-read-bg: #4a3d2c;
+    --status-skimmed-bg: #4a2c4a;
 }
 
 body[data-theme="dark-blue"] {
@@ -922,6 +940,15 @@ body[data-theme="dark-blue"] {
     --input-border: #334155;
     --input-focus-border: #3b82f6;
     --input-focus-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    
+    /* Status and Priority Colors */
+    --priority-high-bg: #3d1f1f;
+    --priority-medium-bg: #3d2f1f;
+    --priority-low-bg: #1f3d1f;
+    --status-read-bg: #1f3d1f;
+    --status-reading-bg: #1f2a3d;
+    --status-to-read-bg: #3d2f1f;
+    --status-skimmed-bg: #3d1f3d;
 }
 
 body[data-theme="clean"] {
@@ -961,6 +988,15 @@ body[data-theme="clean"] {
     --input-border: #d1d5db;
     --input-focus-border: #059669;
     --input-focus-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);
+    
+    /* Status and Priority Colors */
+    --priority-high-bg: #fef2f2;
+    --priority-medium-bg: #fffbeb;
+    --priority-low-bg: #f0fdf4;
+    --status-read-bg: #f0fdf4;
+    --status-reading-bg: #eff6ff;
+    --status-to-read-bg: #fffbeb;
+    --status-skimmed-bg: #faf5ff;
 }
 
 /* Settings Modal Styles */
