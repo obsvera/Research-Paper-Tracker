@@ -583,11 +583,35 @@ function fallbackCopy(text, id) {
     textarea.setSelectionRange(0, 99999); // For mobile devices
     
     try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            showCopyFeedback(id);
+        // Try modern clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyFeedback(id);
+            }).catch(() => {
+                // Fallback to execCommand only if clipboard API fails
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showCopyFeedback(id);
+                    } else {
+                        throw new Error('Copy command failed');
+                    }
+                } catch (execErr) {
+                    console.warn('Copy failed:', execErr);
+                    const copyText = prompt('Copy failed. Please copy this text manually:', text);
+                    if (copyText !== null) {
+                        showCopyFeedback(id);
+                    }
+                }
+            });
         } else {
-            throw new Error('Copy command failed');
+            // Fallback to execCommand for older browsers
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showCopyFeedback(id);
+            } else {
+                throw new Error('Copy command failed');
+            }
         }
     } catch (err) {
         console.warn('Copy failed:', err);
@@ -658,11 +682,35 @@ function fallbackCopyCard(text, id) {
     textarea.setSelectionRange(0, 99999); // For mobile devices
     
     try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            showCopyFeedbackCard(id);
+        // Try modern clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyFeedbackCard(id);
+            }).catch(() => {
+                // Fallback to execCommand only if clipboard API fails
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showCopyFeedbackCard(id);
+                    } else {
+                        throw new Error('Copy command failed');
+                    }
+                } catch (execErr) {
+                    console.warn('Copy failed:', execErr);
+                    const copyText = prompt('Copy failed. Please copy this text manually:', text);
+                    if (copyText !== null) {
+                        showCopyFeedbackCard(id);
+                    }
+                }
+            });
         } else {
-            throw new Error('Copy command failed');
+            // Fallback to execCommand for older browsers
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showCopyFeedbackCard(id);
+            } else {
+                throw new Error('Copy command failed');
+            }
         }
     } catch (err) {
         console.warn('Copy failed:', err);
@@ -983,21 +1031,48 @@ function closeClaudePromptModal() {
 function copyClaudePrompt() {
     const textarea = document.getElementById('claude-prompt');
     if (textarea) {
-        textarea.select();
-        document.execCommand('copy');
+        const text = textarea.value;
         
-        // Show feedback
-        const button = document.querySelector('.modal-btn-primary');
-        if (button) {
-            const originalText = button.innerHTML;
-            button.innerHTML = '✅ Copied!';
-            button.classList.add('copy-success');
-            
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.classList.remove('copy-success');
-            }, 2000);
+        // Try modern clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                showClaudeCopyFeedback();
+            }).catch(() => {
+                // Fallback to execCommand
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showClaudeCopyFeedback();
+                } catch (err) {
+                    console.warn('Copy failed:', err);
+                    alert('Copy failed. Please select and copy the text manually.');
+                }
+            });
+        } else {
+            // Fallback to execCommand for older browsers
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showClaudeCopyFeedback();
+            } catch (err) {
+                console.warn('Copy failed:', err);
+                alert('Copy failed. Please select and copy the text manually.');
+            }
         }
+    }
+}
+
+function showClaudeCopyFeedback() {
+    const button = document.querySelector('.modal-btn-primary');
+    if (button) {
+        const originalText = button.innerHTML;
+        button.innerHTML = '✅ Copied!';
+        button.classList.add('copy-success');
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.classList.remove('copy-success');
+        }, 2000);
     }
 }
 
