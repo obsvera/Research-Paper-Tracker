@@ -1418,8 +1418,8 @@ function initializeEventListeners() {
     // Table event delegation
     setupTableEventDelegation();
     
-    // Table collapse functionality
-    setupTableCollapse();
+    // Sidebar toggle functionality
+    setupSidebarToggle();
     
     // Settings functionality
     setupSettings();
@@ -1472,31 +1472,47 @@ function setupTableEventDelegation() {
     });
 }
 
-// Setup table collapse functionality
-function setupTableCollapse() {
-    const toggleBtn = document.getElementById('tableToggleBtn');
-    const tableWrapper = document.getElementById('tableWrapper');
-    const toggleIcon = document.querySelector('.toggle-icon');
+// Setup sidebar toggle functionality
+function setupSidebarToggle() {
+    const toggleBtn = document.getElementById('sidebarToggleBtn');
+    const floatingToggleBtn = document.getElementById('floatingSidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const toggleIcon = document.querySelector('.sidebar-toggle-btn .toggle-icon');
     
-    if (!toggleBtn || !tableWrapper || !toggleIcon) return;
+    if (!toggleBtn || !sidebar || !toggleIcon) return;
     
-    toggleBtn.addEventListener('click', function() {
-        const isCollapsed = tableWrapper.classList.contains('collapsed');
+    function toggleSidebar() {
+        const isCollapsed = sidebar.classList.contains('collapsed');
         
         if (isCollapsed) {
-            // Expand the table
-            tableWrapper.classList.remove('collapsed');
-            tableWrapper.classList.add('expanded');
-            toggleIcon.textContent = '▲';
-            toggleBtn.setAttribute('title', 'Collapse table');
+            // Expand the sidebar
+            sidebar.classList.remove('collapsed');
+            toggleIcon.textContent = '◀';
+            toggleBtn.setAttribute('title', 'Collapse sidebar');
+            if (floatingToggleBtn) {
+                floatingToggleBtn.classList.remove('visible');
+            }
         } else {
-            // Collapse the table
-            tableWrapper.classList.remove('expanded');
-            tableWrapper.classList.add('collapsed');
-            toggleIcon.textContent = '▼';
-            toggleBtn.setAttribute('title', 'Expand table');
+            // Collapse the sidebar
+            sidebar.classList.add('collapsed');
+            toggleIcon.textContent = '▶';
+            toggleBtn.setAttribute('title', 'Expand sidebar');
+            if (floatingToggleBtn) {
+                floatingToggleBtn.classList.add('visible');
+            }
         }
-    });
+    }
+    
+    toggleBtn.addEventListener('click', toggleSidebar);
+    
+    if (floatingToggleBtn) {
+        floatingToggleBtn.addEventListener('click', toggleSidebar);
+    }
+    
+    // Show floating button initially since sidebar starts collapsed
+    if (floatingToggleBtn) {
+        floatingToggleBtn.classList.add('visible');
+    }
 }
 
 // Settings functionality

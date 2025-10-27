@@ -16,82 +16,95 @@
         ⚙️
     </button>
     
-    <div class="container">
-        <div class="header">
-            <h1>📚 Research Paper Tracker</h1>
-            <p>Organize your dissertation research • Export to CSV • APA 7th edition citations</p>
-        </div>
-        
-        <div class="controls">
-            <button class="btn" id="addRowBtn">+ Add Paper Manually</button>
-            <div class="url-input-group">
-                <input type="text" id="extractedData" placeholder="Enter paper title, URL, DOI, or partial citation..." class="url-input">
-                <button class="btn btn-url" id="dataBtn">+ Add</button>
-            </div>
-            <button class="btn btn-summary" id="showSummaryBtn">📄 Show Summary</button>
-            <div class="smart-input-hint">
-                💡 <strong>Smart Input:</strong> Paste paper titles, URLs, DOIs, or partial citations - Claude will automatically extract the details!
-            </div>
-        </div>
-        
-        <div class="controls">
-            <button class="btn btn-export" id="exportBtn">📥 Export CSV</button>
-            <button class="btn" id="clearDataBtn">🗑️ Clear All</button>
-            <input type="file" id="csvImport" accept=".csv" class="hidden-file-input" aria-label="Import CSV file">
-            <button class="btn" id="importBtn" aria-label="Import papers from CSV file">📤 Import CSV</button>
-        </div>
-
-        <div class="controls">
-            <div class="stats" id="stats">
-                <div class="stat-item">Total Papers: <span id="totalCount">0</span></div>
-                <div class="stat-item">Read: <span id="readCount">0</span></div>
-                <div class="stat-item">Reading: <span id="readingCount">0</span></div>
-                <div class="stat-item">To Read: <span id="toReadCount">0</span></div>
-            </div>
-        </div>
-
-        <div class="table-container">
-            <div class="table-header-with-toggle">
+    <!-- Floating Sidebar Toggle (shown when sidebar is collapsed) -->
+    <button id="floatingSidebarToggle" class="floating-sidebar-toggle" title="Show Papers Table">
+        📊
+    </button>
+    
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar collapsed">
+            <div class="sidebar-header">
                 <h3>Papers Table</h3>
-                <button id="tableToggleBtn" class="table-toggle-btn" title="Toggle table visibility">
-                    <span class="toggle-icon">▼</span>
+                <button id="sidebarToggleBtn" class="sidebar-toggle-btn" title="Toggle sidebar">
+                    <span class="toggle-icon">◀</span>
                 </button>
             </div>
-            <div id="tableWrapper" class="table-wrapper collapsed">
-                <table id="paperTable">
-                    <thead>
-                        <tr>
-                            <th class="col-narrow">Actions</th>
-                            <th class="col-wide">Title</th>
-                            <th class="col-extra-wide">Authors</th>
-                            <th class="col-narrow">Year</th>
-                            <th class="col-extra-wide">Journal/Venue</th>
-                            <th class="col-extra-wide">Keywords/Tags</th>
-                            <th class="col-medium">Status</th>
-                            <th class="col-medium">Priority</th>
-                            <th class="col-narrow">Rating</th>
-                            <th class="col-medium">Date Added</th>
-                            <th class="col-notes">Key Points</th>
-                            <th class="col-notes">Notes/Relevance</th>
-                            <th class="col-notes">Citation</th>
-                            <th class="col-extra-wide">DOI/URL</th>
-                            <th class="col-extra-wide">Chapter/Topic</th>
-                        </tr>
-                    </thead>
-                    <tbody id="paperTableBody">
-                    </tbody>
-                </table>
+            <div class="sidebar-content">
+                <div class="table-container">
+                    <table id="paperTable">
+                        <thead>
+                            <tr>
+                                <th class="col-narrow">Actions</th>
+                                <th class="col-wide">Title</th>
+                                <th class="col-extra-wide">Authors</th>
+                                <th class="col-narrow">Year</th>
+                                <th class="col-extra-wide">Journal/Venue</th>
+                                <th class="col-extra-wide">Keywords/Tags</th>
+                                <th class="col-medium">Status</th>
+                                <th class="col-medium">Priority</th>
+                                <th class="col-narrow">Rating</th>
+                                <th class="col-medium">Date Added</th>
+                                <th class="col-notes">Key Points</th>
+                                <th class="col-notes">Notes/Relevance</th>
+                                <th class="col-notes">Citation</th>
+                                <th class="col-extra-wide">DOI/URL</th>
+                                <th class="col-extra-wide">Chapter/Topic</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paperTableBody">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- Papers Summary Section -->
-        <div class="summary-section">
-            <div class="summary-header">
-                <h2>📖 Papers Summary - Quick Access</h2>
-                <p>Click any title or link to access the full paper</p>
-            </div>
-            <div id="papersSummary" class="papers-grid">
-                <div class="empty-state">No papers added yet. Add some papers to see them here!</div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="container">
+                <div class="header">
+                    <h1>📚 Research Paper Tracker</h1>
+                    <p>Organize your dissertation research • Export to CSV • APA 7th edition citations</p>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" id="addRowBtn">+ Add Paper Manually</button>
+                    <div class="url-input-group">
+                        <input type="text" id="extractedData" placeholder="Enter paper title, URL, DOI, or partial citation..." class="url-input">
+                        <button class="btn btn-url" id="dataBtn">+ Add</button>
+                    </div>
+                    <button class="btn btn-summary" id="showSummaryBtn">📄 Show Summary</button>
+                    <div class="smart-input-hint">
+                        💡 <strong>Smart Input:</strong> Paste paper titles, URLs, DOIs, or partial citations - Claude will automatically extract the details!
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-export" id="exportBtn">📥 Export CSV</button>
+                    <button class="btn" id="clearDataBtn">🗑️ Clear All</button>
+                    <input type="file" id="csvImport" accept=".csv" class="hidden-file-input" aria-label="Import CSV file">
+                    <button class="btn" id="importBtn" aria-label="Import papers from CSV file">📤 Import CSV</button>
+                </div>
+
+                <div class="controls">
+                    <div class="stats" id="stats">
+                        <div class="stat-item">Total Papers: <span id="totalCount">0</span></div>
+                        <div class="stat-item">Read: <span id="readCount">0</span></div>
+                        <div class="stat-item">Reading: <span id="readingCount">0</span></div>
+                        <div class="stat-item">To Read: <span id="toReadCount">0</span></div>
+                    </div>
+                </div>
+
+                <!-- Papers Summary Section -->
+                <div class="summary-section">
+                    <div class="summary-header">
+                        <h2>📖 Papers Summary - Quick Access</h2>
+                        <p>Click any title or link to access the full paper</p>
+                    </div>
+                    <div id="papersSummary" class="papers-grid">
+                        <div class="empty-state">No papers added yet. Add some papers to see them here!</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
