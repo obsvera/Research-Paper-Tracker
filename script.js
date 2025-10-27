@@ -1592,12 +1592,15 @@ function closeSettingsModal() {
 
 // Select theme
 function selectTheme(theme) {
+    console.log('Selecting theme:', theme);
+    
     // Remove current theme
     document.body.removeAttribute('data-theme');
     
     // Apply new theme
     if (theme !== 'default') {
         document.body.setAttribute('data-theme', theme);
+        console.log('Applied theme attribute:', document.body.getAttribute('data-theme'));
     }
     
     // Save theme preference
@@ -1614,13 +1617,19 @@ function selectTheme(theme) {
             }
         });
     }
+    
+    // Force a re-render by updating stats
+    updateStats();
+    showSummary();
 }
 
 // Load saved theme
 function loadTheme() {
     const savedTheme = localStorage.getItem('research-tracker-theme');
+    console.log('Loading saved theme:', savedTheme);
     if (savedTheme && savedTheme !== 'default') {
         document.body.setAttribute('data-theme', savedTheme);
+        console.log('Applied saved theme:', document.body.getAttribute('data-theme'));
     }
 }
 

@@ -868,6 +868,9 @@ body[data-theme="dark"] {
     --border-color: #404040;
     --shadow: 0 2px 10px rgba(0,0,0,0.3);
     
+    /* Test: Make body background very obvious */
+    background-color: #1a1a1a !important;
+    
     /* Extended Dark Theme Variables */
     --table-bg: #2d2d2d;
     --table-header-bg: #3498db;
@@ -916,6 +919,9 @@ body[data-theme="dark-blue"] {
     --border-color: #334155;
     --shadow: 0 2px 10px rgba(0,0,0,0.4);
     
+    /* Test: Make body background very obvious */
+    background-color: #0f1419 !important;
+    
     /* Extended Dark Blue Theme Variables */
     --table-bg: #1e2328;
     --table-header-bg: #3b82f6;
@@ -963,6 +969,9 @@ body[data-theme="clean"] {
     --accent-hover: #047857;
     --border-color: #d1d5db;
     --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    
+    /* Test: Make body background very obvious */
+    background-color: #f0f0f0 !important;
     
     /* Extended Clean Theme Variables */
     --table-bg: #ffffff;
