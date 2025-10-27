@@ -577,10 +577,7 @@ function fallbackCopy(text, id) {
     // Create a temporary textarea
     const textarea = document.createElement('textarea');
     textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    textarea.style.left = '-9999px';
-    textarea.style.top = '-9999px';
+    textarea.className = 'temp-textarea';
     document.body.appendChild(textarea);
     textarea.select();
     textarea.setSelectionRange(0, 99999); // For mobile devices
@@ -588,7 +585,7 @@ function fallbackCopy(text, id) {
     try {
         const successful = document.execCommand('copy');
         if (successful) {
-        showCopyFeedback(id);
+            showCopyFeedback(id);
         } else {
             throw new Error('Copy command failed');
         }
@@ -609,11 +606,11 @@ function showCopyFeedback(id) {
     if (button) {
         const originalText = button.innerHTML;
         button.innerHTML = '✅';
-        button.style.background = '#28a745';
+        button.classList.add('copy-success');
         
         setTimeout(() => {
             button.innerHTML = originalText;
-            button.style.background = '';
+            button.classList.remove('copy-success');
         }, 2000);
     }
 }
@@ -655,10 +652,7 @@ function fallbackCopyCard(text, id) {
     // Create a temporary textarea
     const textarea = document.createElement('textarea');
     textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    textarea.style.left = '-9999px';
-    textarea.style.top = '-9999px';
+    textarea.className = 'temp-textarea';
     document.body.appendChild(textarea);
     textarea.select();
     textarea.setSelectionRange(0, 99999); // For mobile devices
@@ -666,7 +660,7 @@ function fallbackCopyCard(text, id) {
     try {
         const successful = document.execCommand('copy');
         if (successful) {
-        showCopyFeedbackCard(id);
+            showCopyFeedbackCard(id);
         } else {
             throw new Error('Copy command failed');
         }
@@ -687,11 +681,11 @@ function showCopyFeedbackCard(id) {
     if (button) {
         const originalText = button.innerHTML;
         button.innerHTML = '✅ Copied!';
-        button.style.background = '#28a745';
+        button.classList.add('copy-success');
         
         setTimeout(() => {
             button.innerHTML = originalText;
-            button.style.background = '';
+            button.classList.remove('copy-success');
         }, 2000);
     }
 }
@@ -997,11 +991,11 @@ function copyClaudePrompt() {
         if (button) {
             const originalText = button.innerHTML;
             button.innerHTML = '✅ Copied!';
-            button.style.background = '#28a745';
+            button.classList.add('copy-success');
             
             setTimeout(() => {
                 button.innerHTML = originalText;
-                button.style.background = '#4a90e2';
+                button.classList.remove('copy-success');
             }, 2000);
         }
     }
@@ -1249,9 +1243,17 @@ const storage = {
 
             const data = JSON.parse(stored);
             
-            // Validate structure
+            // Validate structure with better error handling
+            if (!data || typeof data !== 'object') {
+                console.warn('Invalid data format, clearing storage');
+                this.clear();
+                return false;
+            }
+            
             if (!Array.isArray(data.papers) || typeof data.nextId !== 'number') {
-                throw new Error('Corrupted data structure');
+                console.warn('Corrupted data structure, clearing storage');
+                this.clear();
+                return false;
             }
 
             // Sanitize loaded data
@@ -1287,7 +1289,8 @@ const storage = {
             return true;
 
         } catch (error) {
-            handleError(error, 'storage.load');
+            console.warn('Storage load error, clearing corrupted data:', error.message);
+            this.clear();
             return false;
         }
     },

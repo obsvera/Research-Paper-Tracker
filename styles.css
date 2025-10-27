@@ -221,6 +221,19 @@ body {
     background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
 }
 
+/* Temporary textarea for copy operations */
+.temp-textarea {
+    position: fixed;
+    opacity: 0;
+    left: -9999px;
+    top: -9999px;
+}
+
+/* Copy success feedback */
+.copy-success {
+    background: #28a745 !important;
+}
+
 .table-container {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
