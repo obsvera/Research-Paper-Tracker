@@ -1381,6 +1381,8 @@ const storage = {
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing app');
+    
     if (storage.load()) {
         console.log('Loaded saved research data');
         // Ensure table is rendered when data is loaded
@@ -1390,7 +1392,9 @@ document.addEventListener('DOMContentLoaded', function() {
     showSummary();
     
     // Add event listeners for all buttons
+    console.log('Initializing event listeners');
     initializeEventListeners();
+    console.log('Event listeners initialized');
 });
 
 // Initialize all event listeners
@@ -1502,9 +1506,14 @@ function setupTableCollapse() {
 // Settings functionality
 function setupSettings() {
     const settingsBtn = document.getElementById('settingsBtn');
-    if (!settingsBtn) return;
+    if (!settingsBtn) {
+        console.error('Settings button not found!');
+        return;
+    }
     
+    console.log('Setting up settings button');
     settingsBtn.addEventListener('click', function(e) {
+        console.log('Settings button clicked!');
         e.preventDefault();
         e.stopPropagation();
         showSettingsModal();
@@ -1513,6 +1522,7 @@ function setupSettings() {
 
 // Show settings modal
 function showSettingsModal() {
+    console.log('Showing settings modal');
     const modal = document.createElement('div');
     modal.className = 'settings-modal';
     modal.innerHTML = `
@@ -1567,9 +1577,11 @@ function showSettingsModal() {
     
     // Add theme selection handlers
     const themeOptions = modal.querySelectorAll('.theme-option');
+    console.log('Found theme options:', themeOptions.length);
     themeOptions.forEach(option => {
         option.addEventListener('click', function() {
             const theme = this.getAttribute('data-theme');
+            console.log('Theme option clicked:', theme);
             selectTheme(theme);
         });
     });
