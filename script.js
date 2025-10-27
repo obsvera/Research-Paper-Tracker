@@ -586,7 +586,7 @@ function fallbackCopy(text, id) {
         // Try modern clipboard API first
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(text).then(() => {
-                showCopyFeedback(id);
+        showCopyFeedback(id);
             }).catch(() => {
                 // Fallback to execCommand only if clipboard API fails
                 try {
@@ -685,7 +685,7 @@ function fallbackCopyCard(text, id) {
         // Try modern clipboard API first
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(text).then(() => {
-                showCopyFeedbackCard(id);
+        showCopyFeedbackCard(id);
             }).catch(() => {
                 // Fallback to execCommand only if clipboard API fails
                 try {
@@ -1039,9 +1039,9 @@ function copyClaudePrompt() {
                 showClaudeCopyFeedback();
             }).catch(() => {
                 // Fallback to execCommand
-                textarea.select();
+        textarea.select();
                 try {
-                    document.execCommand('copy');
+        document.execCommand('copy');
                     showClaudeCopyFeedback();
                 } catch (err) {
                     console.warn('Copy failed:', err);
@@ -1063,16 +1063,16 @@ function copyClaudePrompt() {
 }
 
 function showClaudeCopyFeedback() {
-    const button = document.querySelector('.modal-btn-primary');
-    if (button) {
-        const originalText = button.innerHTML;
-        button.innerHTML = '✅ Copied!';
+        const button = document.querySelector('.modal-btn-primary');
+        if (button) {
+            const originalText = button.innerHTML;
+            button.innerHTML = '✅ Copied!';
         button.classList.add('copy-success');
-        
-        setTimeout(() => {
-            button.innerHTML = originalText;
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
             button.classList.remove('copy-success');
-        }, 2000);
+            }, 2000);
     }
 }
 
@@ -1479,7 +1479,9 @@ function setupSidebarToggle() {
     const sidebar = document.getElementById('sidebar');
     const toggleIcon = document.querySelector('.sidebar-toggle-btn .toggle-icon');
     
-    if (!toggleBtn || !sidebar || !toggleIcon) return;
+    if (!toggleBtn || !sidebar || !toggleIcon) {
+        return;
+    }
     
     function toggleSidebar() {
         const isCollapsed = sidebar.classList.contains('collapsed');
@@ -1509,9 +1511,13 @@ function setupSidebarToggle() {
         floatingToggleBtn.addEventListener('click', toggleSidebar);
     }
     
-    // Show floating button initially since sidebar starts collapsed
+    // Show floating button only when sidebar is collapsed
     if (floatingToggleBtn) {
-        floatingToggleBtn.classList.add('visible');
+        if (sidebar.classList.contains('collapsed')) {
+            floatingToggleBtn.classList.add('visible');
+        } else {
+            floatingToggleBtn.classList.remove('visible');
+        }
     }
 }
 

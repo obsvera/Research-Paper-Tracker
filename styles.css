@@ -25,9 +25,10 @@ body {
 }
 
 .app-container {
-    display: flex;
+    display: flex !important;
     min-height: calc(100vh - 40px);
     gap: 20px;
+    width: 100%;
 }
 
 /* Sidebar Styles */
@@ -44,6 +45,12 @@ body {
 
 .sidebar.collapsed {
     width: 60px;
+}
+
+/* Ensure sidebar is visible */
+.sidebar {
+    display: block !important;
+    visibility: visible !important;
 }
 
 .sidebar-header {
@@ -95,6 +102,12 @@ body {
 
 .sidebar.collapsed .sidebar-content {
     display: none;
+}
+
+/* Ensure sidebar header is always visible */
+.sidebar-header {
+    display: flex !important;
+    visibility: visible !important;
 }
 
 /* Main Content */
