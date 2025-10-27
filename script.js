@@ -18,17 +18,13 @@ function showSummary() {
     if (!summaryContainer) return;
     
     if (papers.length === 0) {
-        summaryContainer.style.display = 'flex';
-        summaryContainer.style.justifyContent = 'center';
-        summaryContainer.style.alignItems = 'center';
-        summaryContainer.innerHTML = '<div style="grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; color: #888; font-style: italic; padding: 40px; min-height: 100px;">No papers added yet. Add some papers to see them here!</div>';
+        summaryContainer.className = 'papers-grid empty-grid';
+        summaryContainer.innerHTML = '<div class="empty-state">No papers added yet. Add some papers to see them here!</div>';
         return;
     }
     
     // Reset container for grid display
-    summaryContainer.style.display = 'grid';
-    summaryContainer.style.justifyContent = '';
-    summaryContainer.style.alignItems = '';
+    summaryContainer.className = 'papers-grid';
     
     // Escape HTML to prevent XSS
     const escapeHtml = (text) => {
@@ -124,14 +120,14 @@ function showSummary() {
                 
                 ${keywordTags ? `<div class="paper-keywords">${keywordTags}</div>` : ''}
                 
-                ${paper.keyPoints ? `<div class="paper-key-points" style="margin: 12px 0; padding: 10px; background: #f8f9fa; border-left: 3px solid #4a90e2; border-radius: 4px;">
-                    <div style="font-weight: 600; color: #2c3e50; margin-bottom: 5px; font-size: 12px; text-transform: uppercase;">Key Points:</div>
-                    <div style="font-size: 13px; line-height: 1.4; color: #555;">${escapeHtml(paper.keyPoints)}</div>
+                ${paper.keyPoints ? `<div class="paper-key-points">
+                    <div class="key-points-header">Key Points:</div>
+                    <div class="key-points-content">${escapeHtml(paper.keyPoints)}</div>
                 </div>` : ''}
                 
-                ${paper.notes ? `<div class="paper-relevance" style="margin: 12px 0; padding: 10px; background: #fff8e1; border-left: 3px solid #ffa726; border-radius: 4px;">
-                    <div style="font-weight: 600; color: #e65100; margin-bottom: 5px; font-size: 12px; text-transform: uppercase;">Relevance & Notes:</div>
-                    <div style="font-size: 13px; line-height: 1.4; color: #555;">${escapeHtml(paper.notes)}</div>
+                ${paper.notes ? `<div class="paper-relevance">
+                    <div class="relevance-header">Relevance & Notes:</div>
+                    <div class="relevance-content">${escapeHtml(paper.notes)}</div>
                 </div>` : ''}
                 
                 <div class="paper-card-actions">
@@ -501,7 +497,7 @@ function renderTable() {
         
         row.innerHTML = `
             <td>
-                <button class="delete-btn" data-paper-id="${paper.id}" style="background: #dc3545; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;">Delete</button>
+                <button class="delete-btn" data-paper-id="${paper.id}">Delete</button>
             </td>
             <td><input type="text" data-paper-id="${paper.id}" data-field="title" value="${escapeHtml(paper.title)}" placeholder="Paper title"></td>
             <td><input type="text" data-paper-id="${paper.id}" data-field="authors" value="${escapeHtml(paper.authors)}" placeholder="Author names"></td>
@@ -592,7 +588,7 @@ function fallbackCopy(text, id) {
     try {
         const successful = document.execCommand('copy');
         if (successful) {
-            showCopyFeedback(id);
+        showCopyFeedback(id);
         } else {
             throw new Error('Copy command failed');
         }
@@ -670,7 +666,7 @@ function fallbackCopyCard(text, id) {
     try {
         const successful = document.execCommand('copy');
         if (successful) {
-            showCopyFeedbackCard(id);
+        showCopyFeedbackCard(id);
         } else {
             throw new Error('Copy command failed');
         }
@@ -950,11 +946,11 @@ Please ensure the JSON is properly formatted and fill in as much information as 
                 <button class="modal-close" id="claude-close-btn">&times;</button>
             </div>
             <div class="modal-content">
-                <p style="margin-bottom: 16px; color: #666; font-size: 14px;">
+                <p class="claude-instructions">
                     Copy the prompt below, paste it into your Claude chat, then copy the JSON response back into the input field.
                 </p>
                 <div class="modal-field">
-                    <textarea id="claude-prompt" readonly style="min-height: 300px; font-family: monospace; font-size: 13px; background: #f8f9fa;">${prompt}</textarea>
+                    <textarea id="claude-prompt" readonly class="claude-prompt-textarea">${prompt}</textarea>
                 </div>
             </div>
             <div class="modal-actions">
@@ -1268,21 +1264,21 @@ const storage = {
                 const validYear = (!isNaN(yearNum) && yearNum >= 0 && yearNum <= maxYear && yearStr.length >= 1) ? yearStr : '';
                 
                 return {
-                    id: Number(p.id) || nextId++,
-                    title: String(p.title || '').slice(0, 500),
-                    authors: String(p.authors || '').slice(0, 500),
+                id: Number(p.id) || nextId++,
+                title: String(p.title || '').slice(0, 500),
+                authors: String(p.authors || '').slice(0, 500),
                     year: validYear,
-                    journal: String(p.journal || '').slice(0, 300),
-                    keywords: String(p.keywords || '').slice(0, 500),
-                    status: ['to-read', 'reading', 'read', 'skimmed'].includes(p.status) ? p.status : 'to-read',
-                    priority: ['low', 'medium', 'high'].includes(p.priority) ? p.priority : 'medium',
-                    rating: ['1','2','3','4','5'].includes(p.rating) ? p.rating : '',
-                    dateAdded: p.dateAdded || new Date().toISOString().split('T')[0],
-                    keyPoints: String(p.keyPoints || '').slice(0, 2000),
-                    notes: String(p.notes || '').slice(0, 1000),
-                    citation: String(p.citation || '').slice(0, 1000),
-                    doi: String(p.doi || '').slice(0, 500),
-                    chapter: String(p.chapter || '').slice(0, 200)
+                journal: String(p.journal || '').slice(0, 300),
+                keywords: String(p.keywords || '').slice(0, 500),
+                status: ['to-read', 'reading', 'read', 'skimmed'].includes(p.status) ? p.status : 'to-read',
+                priority: ['low', 'medium', 'high'].includes(p.priority) ? p.priority : 'medium',
+                rating: ['1','2','3','4','5'].includes(p.rating) ? p.rating : '',
+                dateAdded: p.dateAdded || new Date().toISOString().split('T')[0],
+                keyPoints: String(p.keyPoints || '').slice(0, 2000),
+                notes: String(p.notes || '').slice(0, 1000),
+                citation: String(p.citation || '').slice(0, 1000),
+                doi: String(p.doi || '').slice(0, 500),
+                chapter: String(p.chapter || '').slice(0, 200)
                 };
             });
             
@@ -1428,33 +1424,17 @@ function setupTableCollapse() {
 // Settings functionality
 function setupSettings() {
     const settingsBtn = document.getElementById('settingsBtn');
-    if (!settingsBtn) {
-        console.error('Settings button not found');
-        return;
-    }
-    
-    console.log('Settings button found, adding event listener');
-    
-    // Test if button is visible and clickable
-    console.log('Button styles:', window.getComputedStyle(settingsBtn));
-    console.log('Button position:', settingsBtn.getBoundingClientRect());
+    if (!settingsBtn) return;
     
     settingsBtn.addEventListener('click', function(e) {
-        console.log('Settings button clicked');
         e.preventDefault();
         e.stopPropagation();
         showSettingsModal();
-    });
-    
-    // Also add mousedown for testing
-    settingsBtn.addEventListener('mousedown', function(e) {
-        console.log('Settings button mousedown');
     });
 }
 
 // Show settings modal
 function showSettingsModal() {
-    console.log('showSettingsModal called');
     const modal = document.createElement('div');
     modal.className = 'settings-modal';
     modal.innerHTML = `
@@ -1464,30 +1444,30 @@ function showSettingsModal() {
                 <button class="settings-close" id="settingsCloseBtn">&times;</button>
             </div>
             <div class="settings-section">
-                <h4 style="margin: 0 0 16px 0; color: var(--text-primary);">Page Style</h4>
+                <h4 class="settings-section-title">Page Style</h4>
                 <div class="theme-option" data-theme="default">
-                    <div class="theme-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    <div class="theme-preview theme-preview-default"></div>
                     <div class="theme-info">
                         <div class="theme-name">Default</div>
                         <div class="theme-description">Original blue and purple gradient theme</div>
                     </div>
                 </div>
                 <div class="theme-option" data-theme="dark">
-                    <div class="theme-preview" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);"></div>
+                    <div class="theme-preview theme-preview-dark"></div>
                     <div class="theme-info">
                         <div class="theme-name">Dark Mode</div>
                         <div class="theme-description">Dark theme with blue accents</div>
                     </div>
                 </div>
                 <div class="theme-option" data-theme="dark-blue">
-                    <div class="theme-preview" style="background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);"></div>
+                    <div class="theme-preview theme-preview-dark-blue"></div>
                     <div class="theme-info">
                         <div class="theme-name">Dark Blue & Purple</div>
                         <div class="theme-description">Dark blue with purple gradients, no white text</div>
                     </div>
                 </div>
                 <div class="theme-option" data-theme="clean">
-                    <div class="theme-preview" style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%);"></div>
+                    <div class="theme-preview theme-preview-clean"></div>
                     <div class="theme-info">
                         <div class="theme-name">Clean High Contrast</div>
                         <div class="theme-description">Clean white background with high contrast</div>

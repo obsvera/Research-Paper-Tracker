@@ -84,6 +84,143 @@ body {
     min-width: 300px;
 }
 
+.url-input {
+    flex: 1;
+    margin: 0;
+}
+
+.btn-summary {
+    background: #28a745;
+}
+
+.btn-summary:hover {
+    background: #218838;
+}
+
+.smart-input-hint {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    flex: 100%;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.empty-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #888;
+    font-style: italic;
+    padding: 40px;
+}
+
+/* Paper card content styles */
+.paper-key-points {
+    margin: 12px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-left: 3px solid #4a90e2;
+    border-radius: 4px;
+}
+
+.key-points-header {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.key-points-content {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #555;
+}
+
+.paper-relevance {
+    margin: 12px 0;
+    padding: 10px;
+    background: #fff8e1;
+    border-left: 3px solid #ffa726;
+    border-radius: 4px;
+}
+
+.relevance-header {
+    font-weight: 600;
+    color: #e65100;
+    margin-bottom: 5px;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.relevance-content {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #555;
+}
+
+/* Delete button styles */
+.delete-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}
+
+/* Modal styles */
+.claude-instructions {
+    margin-bottom: 16px;
+    color: #666;
+    font-size: 14px;
+}
+
+.claude-prompt-textarea {
+    min-height: 300px;
+    font-family: monospace;
+    font-size: 13px;
+    background: #f8f9fa;
+}
+
+/* Settings modal styles */
+.settings-section-title {
+    margin: 0 0 16px 0;
+    color: var(--text-primary);
+}
+
+.theme-preview-default {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.theme-preview-dark {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+.theme-preview-dark-blue {
+    background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);
+}
+
+.theme-preview-clean {
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+}
+
 .table-container {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
