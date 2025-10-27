@@ -155,7 +155,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #888;
+    color: var(--text-secondary);
     font-style: italic;
     padding: 40px;
 }
@@ -511,17 +511,18 @@ textarea {
 }
 
 .stat-item {
-    background: white;
+    background: var(--bg-secondary);
     padding: 8px 12px;
     border-radius: 4px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     font-size: 14px;
+    color: var(--text-primary);
 }
 
 /* Summary Section Styles */
 .summary-section {
     margin-top: 30px;
-    background: #f8f9fa;
+    background: var(--bg-primary);
     border-radius: 8px;
     padding: 20px;
     text-align: center; /* This will center content when empty */
@@ -533,13 +534,13 @@ textarea {
 }
 
 .summary-header h2 {
-    color: #4a90e2;
+    color: var(--accent-color);
     margin: 0 0 8px 0;
     font-size: 24px;
 }
 
 .summary-header p {
-    color: #666;
+    color: var(--text-secondary);
     margin: 0;
     font-size: 14px;
 }
@@ -569,7 +570,7 @@ textarea {
 .paper-title {
     font-size: 16px;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 8px;
     line-height: 1.4;
     cursor: pointer;
@@ -578,20 +579,20 @@ textarea {
 }
 
 .paper-title[data-paper-url]:hover {
-    color: #4a90e2;
+    color: var(--accent-color);
     text-decoration: underline;
 }
 
 .paper-authors {
     font-size: 14px;
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 8px;
     font-style: italic;
 }
 
 .paper-year-journal {
     font-size: 13px;
-    color: #888;
+    color: var(--text-secondary);
     margin-bottom: 12px;
 }
 
@@ -728,14 +729,14 @@ textarea {
 }
 
 .modal {
-    background: white;
+    background: var(--bg-secondary);
     border-radius: 12px;
     padding: 24px;
     max-width: 600px;
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow);
 }
 
 .modal-header {
