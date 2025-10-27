@@ -7,6 +7,11 @@ let errorCount = 0;
 const MAX_ERRORS = 3;
 const STORAGE_KEY = 'research-tracker-data-v1';
 
+// Rate limiting for localStorage writes
+let lastSaveTime = 0;
+const SAVE_COOLDOWN = 1000; // 1 second between saves
+let pendingSave = false;
+
 // Summary function
 function showSummary() {
     const summaryContainer = document.getElementById('papersSummary');
@@ -33,7 +38,7 @@ function showSummary() {
         return div.innerHTML;
     };
     
-    // Validate URLs to prevent XSS and ensure they're safe
+    // Validate URLs to prevent XSS and data exfiltration
     const validateUrl = (url) => {
         if (!url) return null;
         try {
@@ -47,11 +52,34 @@ function showSummary() {
                     /vbscript:/i,
                     /onload/i,
                     /onerror/i,
-                    /onclick/i
+                    /onclick/i,
+                    /file:/i,
+                    /ftp:/i,
+                    /blob:/i,
+                    /about:/i
                 ];
                 
                 const urlString = urlObj.toString().toLowerCase();
                 if (dangerousPatterns.some(pattern => pattern.test(urlString))) {
+                    return null;
+                }
+                
+                // Check for suspicious domains that might be used for data exfiltration
+                const suspiciousDomains = [
+                    'localhost',
+                    '127.0.0.1',
+                    '0.0.0.0',
+                    'internal',
+                    'local'
+                ];
+                
+                const hostname = urlObj.hostname.toLowerCase();
+                if (suspiciousDomains.some(domain => hostname.includes(domain))) {
+                    return null;
+                }
+                
+                // Check for very long URLs (potential DoS)
+                if (urlString.length > 2000) {
                     return null;
                 }
                 
@@ -228,11 +256,9 @@ function batchUpdates(id = null) {
             if (id) updateRowStyling(id);
             updateStats();
             showSummary();
-            // Save after UI updates
+            // Save after UI updates (only once)
             storage.save();
             errorCount = 0;
-            // Actually save to localStorage
-            storage.save();
         } catch (error) {
             handleError(error, 'batchUpdates');
         }
@@ -546,14 +572,26 @@ function fallbackCopy(text, id) {
     textarea.value = text;
     textarea.style.position = 'fixed';
     textarea.style.opacity = '0';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '-9999px';
     document.body.appendChild(textarea);
     textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile devices
     
     try {
-        document.execCommand('copy');
-        showCopyFeedback(id);
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showCopyFeedback(id);
+        } else {
+            throw new Error('Copy command failed');
+        }
     } catch (err) {
-        alert('Failed to copy citation. Please manually select and copy the text.');
+        console.warn('Copy failed:', err);
+        // Show user-friendly message with manual copy option
+        const copyText = prompt('Copy failed. Please copy this text manually:', text);
+        if (copyText !== null) {
+            showCopyFeedback(id);
+        }
     }
     
     document.body.removeChild(textarea);
@@ -612,14 +650,26 @@ function fallbackCopyCard(text, id) {
     textarea.value = text;
     textarea.style.position = 'fixed';
     textarea.style.opacity = '0';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '-9999px';
     document.body.appendChild(textarea);
     textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile devices
     
     try {
-        document.execCommand('copy');
-        showCopyFeedbackCard(id);
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showCopyFeedbackCard(id);
+        } else {
+            throw new Error('Copy command failed');
+        }
     } catch (err) {
-        alert('Failed to copy citation. Please manually select and copy the text.');
+        console.warn('Copy failed:', err);
+        // Show user-friendly message with manual copy option
+        const copyText = prompt('Copy failed. Please copy this text manually:', text);
+        if (copyText !== null) {
+            showCopyFeedbackCard(id);
+        }
     }
     
     document.body.removeChild(textarea);
@@ -713,7 +763,8 @@ function importCSV(event) {
                 const line = lines[i].trim();
                 if (!line) continue;
                 
-                const values = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+                // Use safer CSV parsing to prevent ReDoS
+                const values = parseCSVLine(line);
                 if (values.length < 3) continue; // Minimum required fields
                 
                 const cleanValue = (val) => val ? val.replace(/^"|"$/g, '').trim() : '';
@@ -748,6 +799,9 @@ function importCSV(event) {
             } else {
                 alert('No valid papers found in the CSV file');
             }
+            
+            // Clear the file input to prevent re-submission
+            event.target.value = '';
         } catch (error) {
             alert('Error reading CSV file. Please check the file format');
         }
@@ -758,6 +812,49 @@ function importCSV(event) {
     };
     
     reader.readAsText(file);
+}
+
+// Safe CSV line parsing to prevent ReDoS attacks
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    let i = 0;
+    
+    // Limit processing to prevent DoS
+    const maxLength = 10000;
+    if (line.length > maxLength) {
+        throw new Error('CSV line too long');
+    }
+    
+    while (i < line.length) {
+        const char = line[i];
+        
+        if (char === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+                // Escaped quote
+                current += '"';
+                i += 2;
+            } else {
+                // Toggle quote state
+                inQuotes = !inQuotes;
+                i++;
+            }
+        } else if (char === ',' && !inQuotes) {
+            // End of field
+            result.push(current);
+            current = '';
+            i++;
+        } else {
+            current += char;
+            i++;
+        }
+    }
+    
+    // Add the last field
+    result.push(current);
+    
+    return result;
 }
 
 // Smart input processing function
@@ -803,7 +900,20 @@ async function addFromSmartInput() {
 
 // Show Claude prompt for user to copy
 function showClaudePrompt(input) {
-    const prompt = `I'm using a Research Paper Tracker app and need you to extract paper information. The user provided: "${input}"
+    // Sanitize input to prevent XSS
+    const sanitizeInput = (text) => {
+        if (!text) return '';
+        return text
+            .replace(/[<>]/g, '') // Remove potential HTML tags
+            .replace(/"/g, '\\"') // Escape quotes
+            .replace(/\n/g, '\\n') // Escape newlines
+            .replace(/\r/g, '\\r') // Escape carriage returns
+            .substring(0, 1000); // Limit length
+    };
+    
+    const sanitizedInput = sanitizeInput(input);
+    
+    const prompt = `I'm using a Research Paper Tracker app and need you to extract paper information. The user provided: "${sanitizedInput}"
 
 Please analyze this and return the information in this exact JSON format:
 
@@ -1038,6 +1148,21 @@ function addPaperFromPreview() {
 // Storage utilities
 const storage = {
     save() {
+        // Rate limiting: prevent too frequent saves
+        const now = Date.now();
+        if (now - lastSaveTime < SAVE_COOLDOWN) {
+            if (!pendingSave) {
+                pendingSave = true;
+                setTimeout(() => {
+                    this.save();
+                    pendingSave = false;
+                }, SAVE_COOLDOWN - (now - lastSaveTime));
+            }
+            return;
+        }
+        
+        lastSaveTime = now;
+        
         try {
             const data = {
                 papers: papers,
@@ -1048,12 +1173,66 @@ const storage = {
             if (!Array.isArray(data.papers) || typeof data.nextId !== 'number') {
                 throw new Error('Invalid data structure');
             }
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            
+            const dataString = JSON.stringify(data);
+            
+            // Check localStorage quota before saving
+            try {
+                // Test if we can store the data
+                const testKey = 'test_' + Date.now();
+                localStorage.setItem(testKey, dataString);
+                localStorage.removeItem(testKey);
+            } catch (quotaError) {
+                // If quota exceeded, try to clean up old data and compress
+                this.cleanupOldData();
+                // Try again with compressed data
+                const compressedData = this.compressData(data);
+                localStorage.setItem(STORAGE_KEY, compressedData);
+                return;
+            }
+            
+            localStorage.setItem(STORAGE_KEY, dataString);
             // Ensure table is rendered after saving
             renderTable();
         } catch (error) {
             handleError(error, 'storage.save');
+            // If still failing, show user warning
+            if (error.name === 'QuotaExceededError') {
+                alert('Storage quota exceeded. Please export your data and clear some papers to continue.');
+            }
         }
+    },
+    
+    cleanupOldData() {
+        try {
+            // Remove old test keys
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('test_')) {
+                    localStorage.removeItem(key);
+                }
+            }
+        } catch (e) {
+            console.warn('Could not cleanup old data:', e);
+        }
+    },
+    
+    compressData(data) {
+        // Simple compression by removing empty fields
+        const compressed = {
+            papers: data.papers.map(paper => {
+                const compressedPaper = {};
+                Object.keys(paper).forEach(key => {
+                    if (paper[key] && paper[key] !== '') {
+                        compressedPaper[key] = paper[key];
+                    }
+                });
+                return compressedPaper;
+            }),
+            nextId: data.nextId,
+            lastModified: data.lastModified
+        };
+        return JSON.stringify(compressed);
     },
 
     load() {
