@@ -12,6 +12,32 @@
     --accent-hover: #357abd;
     --border-color: #e0e0e0;
     --shadow: 0 2px 10px rgba(0,0,0,0.1);
+    
+    /* Extended Theme Variables */
+    --table-bg: #ffffff;
+    --table-header-bg: #4a90e2;
+    --table-header-text: #ffffff;
+    --table-row-bg: #ffffff;
+    --table-row-hover: #f8f9ff;
+    --table-row-even: #fafafa;
+    --table-row-even-hover: #f0f4ff;
+    --table-border: #e0e0e0;
+    --table-border-light: #f0f0f0;
+    
+    --card-bg: #ffffff;
+    --card-border: #4a90e2;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    
+    --status-bg: #ddd;
+    --status-text: #555;
+    --priority-bg: #f0f0f0;
+    --priority-text: #666;
+    
+    --input-bg: #ffffff;
+    --input-border: #ddd;
+    --input-focus-border: #4a90e2;
+    --input-focus-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
 }
 
 body {
@@ -236,9 +262,10 @@ body {
 }
 
 .table-container {
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--table-border);
     border-radius: 8px;
     overflow: hidden;
+    background: var(--table-bg);
 }
 
 .table-header-with-toggle {
@@ -246,14 +273,14 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e0e0e0;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--table-border);
     margin: 0;
 }
 
 .table-header-with-toggle h3 {
     margin: 0;
-    color: #4a90e2;
+    color: var(--accent-color);
     font-size: 18px;
     font-weight: 600;
 }
@@ -306,8 +333,8 @@ table {
 }
 
 th {
-    background: var(--accent-color);
-    color: var(--text-inverse);
+    background: var(--table-header-bg);
+    color: var(--table-header-text);
     padding: 15px 12px;
     text-align: left;
     font-weight: 600;
@@ -320,37 +347,40 @@ th {
 
 td {
     padding: 15px 12px;
-    border-bottom: 1px solid #e0e0e0;
-    border-right: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--table-border);
+    border-right: 1px solid var(--table-border-light);
     vertical-align: top;
+    background: var(--table-row-bg);
 }
 
 tr:hover {
-    background-color: #f8f9ff;
+    background-color: var(--table-row-hover);
 }
 
 tr:nth-child(even) {
-    background-color: #fafafa;
+    background-color: var(--table-row-even);
 }
 
 tr:nth-child(even):hover {
-    background-color: #f0f4ff;
+    background-color: var(--table-row-even-hover);
 }
 
 input, select, textarea {
     width: 100%;
     padding: 8px 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--input-border);
     border-radius: 4px;
     font-size: 14px;
     box-sizing: border-box;
     font-family: inherit;
+    background: var(--input-bg);
+    color: var(--text-primary);
 }
 
 input:focus, select:focus, textarea:focus {
-    border-color: #4a90e2;
+    border-color: var(--input-focus-border);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+    box-shadow: var(--input-focus-shadow);
 }
 
 textarea {
@@ -513,18 +543,18 @@ textarea {
 }
 
 .paper-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-left: 4px solid #4a90e2;
+    box-shadow: var(--card-shadow);
+    border-left: 4px solid var(--card-border);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     text-align: left; /* Reset text alignment for actual paper cards */
 }
 
 .paper-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    box-shadow: var(--card-hover-shadow);
 }
 
 .paper-title {
@@ -583,8 +613,8 @@ textarea {
     font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
-    background: #ddd;
-    color: #555;
+    background: var(--status-bg);
+    color: var(--status-text);
 }
 
 .priority-badge {
@@ -593,8 +623,8 @@ textarea {
     font-size: 10px;
     font-weight: 500;
     text-transform: uppercase;
-    background: #f0f0f0;
-    color: #666;
+    background: var(--priority-bg);
+    color: var(--priority-text);
 }
 
 .paper-card-actions {
@@ -827,6 +857,32 @@ body[data-theme="dark"] {
     --accent-hover: #2980b9;
     --border-color: #404040;
     --shadow: 0 2px 10px rgba(0,0,0,0.3);
+    
+    /* Extended Dark Theme Variables */
+    --table-bg: #2d2d2d;
+    --table-header-bg: #3498db;
+    --table-header-text: #ffffff;
+    --table-row-bg: #2d2d2d;
+    --table-row-hover: #3a3a3a;
+    --table-row-even: #333333;
+    --table-row-even-hover: #404040;
+    --table-border: #404040;
+    --table-border-light: #4a4a4a;
+    
+    --card-bg: #2d2d2d;
+    --card-border: #3498db;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    
+    --status-bg: #555555;
+    --status-text: #bdc3c7;
+    --priority-bg: #404040;
+    --priority-text: #95a5a6;
+    
+    --input-bg: #2d2d2d;
+    --input-border: #404040;
+    --input-focus-border: #3498db;
+    --input-focus-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
 body[data-theme="dark-blue"] {
@@ -840,6 +896,32 @@ body[data-theme="dark-blue"] {
     --accent-hover: #2563eb;
     --border-color: #334155;
     --shadow: 0 2px 10px rgba(0,0,0,0.4);
+    
+    /* Extended Dark Blue Theme Variables */
+    --table-bg: #1e2328;
+    --table-header-bg: #3b82f6;
+    --table-header-text: #ffffff;
+    --table-row-bg: #1e2328;
+    --table-row-hover: #2a3441;
+    --table-row-even: #252b35;
+    --table-row-even-hover: #2f3742;
+    --table-border: #334155;
+    --table-border-light: #475569;
+    
+    --card-bg: #1e2328;
+    --card-border: #3b82f6;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    
+    --status-bg: #475569;
+    --status-text: #94a3b8;
+    --priority-bg: #334155;
+    --priority-text: #64748b;
+    
+    --input-bg: #1e2328;
+    --input-border: #334155;
+    --input-focus-border: #3b82f6;
+    --input-focus-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 body[data-theme="clean"] {
@@ -853,6 +935,32 @@ body[data-theme="clean"] {
     --accent-hover: #047857;
     --border-color: #d1d5db;
     --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    
+    /* Extended Clean Theme Variables */
+    --table-bg: #ffffff;
+    --table-header-bg: #059669;
+    --table-header-text: #ffffff;
+    --table-row-bg: #ffffff;
+    --table-row-hover: #f0fdf4;
+    --table-row-even: #f9fafb;
+    --table-row-even-hover: #f0fdf4;
+    --table-border: #d1d5db;
+    --table-border-light: #e5e7eb;
+    
+    --card-bg: #ffffff;
+    --card-border: #059669;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    
+    --status-bg: #e5e7eb;
+    --status-text: #374151;
+    --priority-bg: #f3f4f6;
+    --priority-text: #4b5563;
+    
+    --input-bg: #ffffff;
+    --input-border: #d1d5db;
+    --input-focus-border: #059669;
+    --input-focus-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);
 }
 
 /* Settings Modal Styles */
