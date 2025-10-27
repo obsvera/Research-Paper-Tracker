@@ -134,14 +134,17 @@ function showSummary() {
                     <div style="font-size: 13px; line-height: 1.4; color: #555;">${escapeHtml(paper.notes)}</div>
                 </div>` : ''}
                 
-                ${paperUrl ? `<a href="${escapeHtml(paperUrl)}" target="_blank" rel="noopener noreferrer" class="paper-link">📖 Open Paper</a>` : ''}
+                <div class="paper-card-actions">
+                    ${paperUrl ? `<a href="${escapeHtml(paperUrl)}" target="_blank" rel="noopener noreferrer" class="paper-link">📖 Open Paper</a>` : ''}
+                    <button class="copy-citation-card-btn" data-paper-id="${paper.id}" title="Copy citation to clipboard">📋 Copy Citation</button>
+                </div>
             </div>
         `;
     }).join('');
     
     summaryContainer.innerHTML = summaryHTML;
     
-    // Add safe event delegation for paper title clicks
+    // Add safe event delegation for paper title clicks and copy buttons
     summaryContainer.addEventListener('click', function(event) {
         const paperTitle = event.target.closest('.paper-title');
         if (paperTitle) {
@@ -156,6 +159,14 @@ function showSummary() {
                 } catch (e) {
                     console.warn('Invalid URL:', url);
                 }
+            }
+        }
+        
+        // Handle copy citation button clicks
+        if (event.target.classList.contains('copy-citation-card-btn')) {
+            const paperId = parseInt(event.target.getAttribute('data-paper-id'));
+            if (paperId) {
+                copyCitationFromCard(paperId);
             }
         }
     });
