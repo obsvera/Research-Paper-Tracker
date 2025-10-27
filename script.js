@@ -1346,6 +1346,12 @@ function initializeEventListeners() {
     
     // Table collapse functionality
     setupTableCollapse();
+    
+    // Settings functionality
+    setupSettings();
+    
+    // Load saved theme
+    loadTheme();
 }
 
 // Setup event delegation for table interactions
@@ -1417,6 +1423,127 @@ function setupTableCollapse() {
             toggleBtn.setAttribute('title', 'Expand table');
         }
     });
+}
+
+// Settings functionality
+function setupSettings() {
+    const settingsBtn = document.getElementById('settingsBtn');
+    if (!settingsBtn) return;
+    
+    settingsBtn.addEventListener('click', showSettingsModal);
+}
+
+// Show settings modal
+function showSettingsModal() {
+    const modal = document.createElement('div');
+    modal.className = 'settings-modal';
+    modal.innerHTML = `
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3 class="settings-title">Settings</h3>
+                <button class="settings-close" id="settingsCloseBtn">&times;</button>
+            </div>
+            <div class="settings-section">
+                <h4 style="margin: 0 0 16px 0; color: var(--text-primary);">Page Style</h4>
+                <div class="theme-option" data-theme="default">
+                    <div class="theme-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    <div class="theme-info">
+                        <div class="theme-name">Default</div>
+                        <div class="theme-description">Original blue and purple gradient theme</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="dark">
+                    <div class="theme-preview" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);"></div>
+                    <div class="theme-info">
+                        <div class="theme-name">Dark Mode</div>
+                        <div class="theme-description">Dark theme with blue accents</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="dark-blue">
+                    <div class="theme-preview" style="background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);"></div>
+                    <div class="theme-info">
+                        <div class="theme-name">Dark Blue & Purple</div>
+                        <div class="theme-description">Dark blue with purple gradients, no white text</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="clean">
+                    <div class="theme-preview" style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%);"></div>
+                    <div class="theme-info">
+                        <div class="theme-name">Clean High Contrast</div>
+                        <div class="theme-description">Clean white background with high contrast</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    document.getElementById('settingsCloseBtn').addEventListener('click', closeSettingsModal);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeSettingsModal();
+        }
+    });
+    
+    // Add theme selection handlers
+    const themeOptions = modal.querySelectorAll('.theme-option');
+    themeOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const theme = this.getAttribute('data-theme');
+            selectTheme(theme);
+        });
+    });
+    
+    // Mark current theme as selected
+    const currentTheme = document.body.getAttribute('data-theme') || 'default';
+    const currentOption = modal.querySelector(`[data-theme="${currentTheme}"]`);
+    if (currentOption) {
+        currentOption.classList.add('selected');
+    }
+}
+
+// Close settings modal
+function closeSettingsModal() {
+    const modal = document.querySelector('.settings-modal');
+    if (modal) {
+        document.body.removeChild(modal);
+    }
+}
+
+// Select theme
+function selectTheme(theme) {
+    // Remove current theme
+    document.body.removeAttribute('data-theme');
+    
+    // Apply new theme
+    if (theme !== 'default') {
+        document.body.setAttribute('data-theme', theme);
+    }
+    
+    // Save theme preference
+    localStorage.setItem('research-tracker-theme', theme);
+    
+    // Update selected state in modal
+    const modal = document.querySelector('.settings-modal');
+    if (modal) {
+        const themeOptions = modal.querySelectorAll('.theme-option');
+        themeOptions.forEach(option => {
+            option.classList.remove('selected');
+            if (option.getAttribute('data-theme') === theme) {
+                option.classList.add('selected');
+            }
+        });
+    }
+}
+
+// Load saved theme
+function loadTheme() {
+    const savedTheme = localStorage.getItem('research-tracker-theme');
+    if (savedTheme && savedTheme !== 'default') {
+        document.body.setAttribute('data-theme', savedTheme);
+    }
 }
 
 // Save data before tab/window closes
