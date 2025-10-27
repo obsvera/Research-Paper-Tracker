@@ -46,29 +46,37 @@
         </div>
 
         <div class="table-container">
-            <table id="paperTable">
-                <thead>
-                    <tr>
-                        <th class="col-narrow">Actions</th>
-                        <th class="col-wide">Title</th>
-                        <th class="col-extra-wide">Authors</th>
-                        <th class="col-narrow">Year</th>
-                        <th class="col-extra-wide">Journal/Venue</th>
-                        <th class="col-extra-wide">Keywords/Tags</th>
-                        <th class="col-medium">Status</th>
-                        <th class="col-medium">Priority</th>
-                        <th class="col-narrow">Rating</th>
-                        <th class="col-medium">Date Added</th>
-                        <th class="col-notes">Key Points</th>
-                        <th class="col-notes">Notes/Relevance</th>
-                        <th class="col-notes">Citation</th>
-                        <th class="col-extra-wide">DOI/URL</th>
-                        <th class="col-extra-wide">Chapter/Topic</th>
-                    </tr>
-                </thead>
-                <tbody id="paperTableBody">
-                </tbody>
-            </table>
+            <div class="table-header-with-toggle">
+                <h3>Papers Table</h3>
+                <button id="tableToggleBtn" class="table-toggle-btn" title="Toggle table visibility">
+                    <span class="toggle-icon">▼</span>
+                </button>
+            </div>
+            <div id="tableWrapper" class="table-wrapper collapsed">
+                <table id="paperTable">
+                    <thead>
+                        <tr>
+                            <th class="col-narrow">Actions</th>
+                            <th class="col-wide">Title</th>
+                            <th class="col-extra-wide">Authors</th>
+                            <th class="col-narrow">Year</th>
+                            <th class="col-extra-wide">Journal/Venue</th>
+                            <th class="col-extra-wide">Keywords/Tags</th>
+                            <th class="col-medium">Status</th>
+                            <th class="col-medium">Priority</th>
+                            <th class="col-narrow">Rating</th>
+                            <th class="col-medium">Date Added</th>
+                            <th class="col-notes">Key Points</th>
+                            <th class="col-notes">Notes/Relevance</th>
+                            <th class="col-notes">Citation</th>
+                            <th class="col-extra-wide">DOI/URL</th>
+                            <th class="col-extra-wide">Chapter/Topic</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paperTableBody">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Papers Summary Section -->

@@ -255,7 +255,10 @@ function updatePaper(id, field, value) {
             switch (fieldName) {
                 case 'year':
                     const yearNum = parseInt(fieldValue);
-                    return (!isNaN(yearNum) && yearNum >= 1000 && yearNum <= 2030) ? yearNum.toString() : '';
+                    const currentYear = new Date().getFullYear();
+                    const maxYear = currentYear + 2; // Allow 2 years in the future for preprints
+                    // Validate year is a reasonable range for academic papers (including historical documents)
+                    return (!isNaN(yearNum) && yearNum >= 0 && yearNum <= maxYear && yearNum.toString().length >= 1) ? yearNum.toString() : '';
                 case 'rating':
                     const ratingNum = parseInt(fieldValue);
                     return (!isNaN(ratingNum) && ratingNum >= 1 && ratingNum <= 5) ? ratingNum.toString() : '';
@@ -465,7 +468,7 @@ function renderTable() {
             </td>
             <td><input type="text" data-paper-id="${paper.id}" data-field="title" value="${escapeHtml(paper.title)}" placeholder="Paper title"></td>
             <td><input type="text" data-paper-id="${paper.id}" data-field="authors" value="${escapeHtml(paper.authors)}" placeholder="Author names"></td>
-            <td><input type="number" data-paper-id="${paper.id}" data-field="year" value="${escapeHtml(paper.year)}" placeholder="2023" min="1900" max="2030"></td>
+            <td><input type="number" data-paper-id="${paper.id}" data-field="year" value="${escapeHtml(paper.year)}" placeholder="${new Date().getFullYear()}" min="0" max="${new Date().getFullYear() + 2}"></td>
             <td><input type="text" data-paper-id="${paper.id}" data-field="journal" value="${escapeHtml(paper.journal)}" placeholder="Journal name"></td>
             <td><input type="text" data-paper-id="${paper.id}" data-field="keywords" value="${escapeHtml(paper.keywords)}" placeholder="keyword1, keyword2"></td>
             <td>
@@ -927,7 +930,7 @@ function showPreviewModal(paperInfo) {
                 </div>
                 <div class="modal-field">
                     <label>Year</label>
-                    <input type="number" id="preview-year" value="${sanitizedPaper.year}" min="1000" max="2030">
+                    <input type="number" id="preview-year" value="${sanitizedPaper.year}" min="0" max="${new Date().getFullYear() + 2}">
                 </div>
                 <div class="modal-field">
                     <label>Journal/Venue</label>
@@ -1066,23 +1069,32 @@ const storage = {
             }
 
             // Sanitize loaded data
-            papers = data.papers.map(p => ({
-                id: Number(p.id) || nextId++,
-                title: String(p.title || '').slice(0, 500),
-                authors: String(p.authors || '').slice(0, 500),
-                year: String(p.year || '').slice(0, 4),
-                journal: String(p.journal || '').slice(0, 300),
-                keywords: String(p.keywords || '').slice(0, 500),
-                status: ['to-read', 'reading', 'read', 'skimmed'].includes(p.status) ? p.status : 'to-read',
-                priority: ['low', 'medium', 'high'].includes(p.priority) ? p.priority : 'medium',
-                rating: ['1','2','3','4','5'].includes(p.rating) ? p.rating : '',
-                dateAdded: p.dateAdded || new Date().toISOString().split('T')[0],
-                keyPoints: String(p.keyPoints || '').slice(0, 2000),
-                notes: String(p.notes || '').slice(0, 1000),
-                citation: String(p.citation || '').slice(0, 1000),
-                doi: String(p.doi || '').slice(0, 500),
-                chapter: String(p.chapter || '').slice(0, 200)
-            }));
+            const currentYear = new Date().getFullYear();
+            const maxYear = currentYear + 2;
+            
+            papers = data.papers.map(p => {
+                const yearStr = String(p.year || '').slice(0, 4);
+                const yearNum = parseInt(yearStr);
+                const validYear = (!isNaN(yearNum) && yearNum >= 0 && yearNum <= maxYear && yearStr.length >= 1) ? yearStr : '';
+                
+                return {
+                    id: Number(p.id) || nextId++,
+                    title: String(p.title || '').slice(0, 500),
+                    authors: String(p.authors || '').slice(0, 500),
+                    year: validYear,
+                    journal: String(p.journal || '').slice(0, 300),
+                    keywords: String(p.keywords || '').slice(0, 500),
+                    status: ['to-read', 'reading', 'read', 'skimmed'].includes(p.status) ? p.status : 'to-read',
+                    priority: ['low', 'medium', 'high'].includes(p.priority) ? p.priority : 'medium',
+                    rating: ['1','2','3','4','5'].includes(p.rating) ? p.rating : '',
+                    dateAdded: p.dateAdded || new Date().toISOString().split('T')[0],
+                    keyPoints: String(p.keyPoints || '').slice(0, 2000),
+                    notes: String(p.notes || '').slice(0, 1000),
+                    citation: String(p.citation || '').slice(0, 1000),
+                    doi: String(p.doi || '').slice(0, 500),
+                    chapter: String(p.chapter || '').slice(0, 200)
+                };
+            });
             
             // Ensure nextId is higher than any existing id
             nextId = Math.max(data.nextId, ...papers.map(p => p.id) + 1);
@@ -1141,6 +1153,9 @@ function initializeEventListeners() {
     
     // Table event delegation
     setupTableEventDelegation();
+    
+    // Table collapse functionality
+    setupTableCollapse();
 }
 
 // Setup event delegation for table interactions
@@ -1183,6 +1198,33 @@ function setupTableEventDelegation() {
         
         if (paperId && field) {
             updatePaper(paperId, field, e.target.value);
+        }
+    });
+}
+
+// Setup table collapse functionality
+function setupTableCollapse() {
+    const toggleBtn = document.getElementById('tableToggleBtn');
+    const tableWrapper = document.getElementById('tableWrapper');
+    const toggleIcon = document.querySelector('.toggle-icon');
+    
+    if (!toggleBtn || !tableWrapper || !toggleIcon) return;
+    
+    toggleBtn.addEventListener('click', function() {
+        const isCollapsed = tableWrapper.classList.contains('collapsed');
+        
+        if (isCollapsed) {
+            // Expand the table
+            tableWrapper.classList.remove('collapsed');
+            tableWrapper.classList.add('expanded');
+            toggleIcon.textContent = '▲';
+            toggleBtn.setAttribute('title', 'Collapse table');
+        } else {
+            // Collapse the table
+            tableWrapper.classList.remove('expanded');
+            tableWrapper.classList.add('collapsed');
+            toggleIcon.textContent = '▼';
+            toggleBtn.setAttribute('title', 'Expand table');
         }
     });
 }
