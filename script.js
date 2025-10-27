@@ -1428,13 +1428,33 @@ function setupTableCollapse() {
 // Settings functionality
 function setupSettings() {
     const settingsBtn = document.getElementById('settingsBtn');
-    if (!settingsBtn) return;
+    if (!settingsBtn) {
+        console.error('Settings button not found');
+        return;
+    }
     
-    settingsBtn.addEventListener('click', showSettingsModal);
+    console.log('Settings button found, adding event listener');
+    
+    // Test if button is visible and clickable
+    console.log('Button styles:', window.getComputedStyle(settingsBtn));
+    console.log('Button position:', settingsBtn.getBoundingClientRect());
+    
+    settingsBtn.addEventListener('click', function(e) {
+        console.log('Settings button clicked');
+        e.preventDefault();
+        e.stopPropagation();
+        showSettingsModal();
+    });
+    
+    // Also add mousedown for testing
+    settingsBtn.addEventListener('mousedown', function(e) {
+        console.log('Settings button mousedown');
+    });
 }
 
 // Show settings modal
 function showSettingsModal() {
+    console.log('showSettingsModal called');
     const modal = document.createElement('div');
     modal.className = 'settings-modal';
     modal.innerHTML = `
